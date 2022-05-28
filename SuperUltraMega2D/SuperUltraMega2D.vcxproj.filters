@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{e47e23b3-c269-40e7-a017-c8ef44fc1f6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Graphics">
+      <UniqueIdentifier>{7d722536-1b8c-497e-ab0c-a7f633c5166b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Graphics\Vulkan">
+      <UniqueIdentifier>{21f0943c-c2af-4cb0-9d5b-77e96d150548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Graphics\ImGuiLayer">
+      <UniqueIdentifier>{1070c8bf-1f41-424d-a604-ce2d61c0f063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Events">
+      <UniqueIdentifier>{a7ef5ce9-b343-44e6-a137-5b9e286bab3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Core">
+      <UniqueIdentifier>{6bce11ff-eaed-4806-8c7d-3f3f909f25b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Core\Math">
+      <UniqueIdentifier>{fa55c5fb-3eb2-42a6-9b62-393c28de872c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Graphics\Objects">
+      <UniqueIdentifier>{4b4834f6-5531-40c4-9f4a-b4850c008e66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\pugixml">
+      <UniqueIdentifier>{931973f8-a6fb-4b75-9743-feb173459a41}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\Objects\Batch.cpp">
+      <Filter>Source Files\Engine\Graphics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\Objects\Camera.cpp">
+      <Filter>Source Files\Engine\Graphics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\Objects\Vertex.cpp">
+      <Filter>Source Files\Engine\Graphics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\Vulkan\Vulkan.cpp">
+      <Filter>Source Files\Engine\Graphics\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\Vulkan\VulkanImgui.cpp">
+      <Filter>Source Files\Engine\Graphics\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\Vulkan\VulkanObjects.cpp">
+      <Filter>Source Files\Engine\Graphics\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\ImGuiLayer\imgui.cpp">
+      <Filter>Source Files\Engine\Graphics\ImGuiLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\ImGuiLayer\imgui_demo.cpp">
+      <Filter>Source Files\Engine\Graphics\ImGuiLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\ImGuiLayer\imgui_draw.cpp">
+      <Filter>Source Files\Engine\Graphics\ImGuiLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\ImGuiLayer\imgui_impl_glfw.cpp">
+      <Filter>Source Files\Engine\Graphics\ImGuiLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\ImGuiLayer\imgui_impl_vulkan.cpp">
+      <Filter>Source Files\Engine\Graphics\ImGuiLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\ImGuiLayer\imgui_tables.cpp">
+      <Filter>Source Files\Engine\Graphics\ImGuiLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\ImGuiLayer\imgui_widgets.cpp">
+      <Filter>Source Files\Engine\Graphics\ImGuiLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Graphics\Renderer.cpp">
+      <Filter>Source Files\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Map.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Scene.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\AnimationPlayer.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\middleware\pugixml\pugixml.cpp">
+      <Filter>Resource Files\pugixml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\Engine.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Engine\Graphics\Objects\Batch.h">
+      <Filter>Source Files\Engine\Graphics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Objects\Camera.h">
+      <Filter>Source Files\Engine\Graphics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Objects\Light.h">
+      <Filter>Source Files\Engine\Graphics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Objects\Texture.h">
+      <Filter>Source Files\Engine\Graphics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Objects\Vertex.h">
+      <Filter>Source Files\Engine\Graphics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Vulkan\Vulkan.h">
+      <Filter>Source Files\Engine\Graphics\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Vulkan\VulkanDefines.h">
+      <Filter>Source Files\Engine\Graphics\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Vulkan\VulkanImgui.h">
+      <Filter>Source Files\Engine\Graphics\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Vulkan\VulkanInclude.h">
+      <Filter>Source Files\Engine\Graphics\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Vulkan\VulkanObjects.h">
+      <Filter>Source Files\Engine\Graphics\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Core\Math\Vec.h">
+      <Filter>Source Files\Engine\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Core\Math\Mat.h">
+      <Filter>Source Files\Engine\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Core\Math\Math.h">
+      <Filter>Source Files\Engine\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Objects\Objects.h">
+      <Filter>Source Files\Engine\Graphics\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Renderer.h">
+      <Filter>Source Files\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Graphics\Sprite.h">
+      <Filter>Source Files\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Map.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Scene.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Core\Debug.h">
+      <Filter>Source Files\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Core\Core.h">
+      <Filter>Source Files\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Core\SystemGuard.h">
+      <Filter>Source Files\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\AnimationPlayer.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\middleware\pugixml\pugiconfig.hpp">
+      <Filter>Resource Files\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\middleware\pugixml\pugixml.hpp">
+      <Filter>Resource Files\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Engine.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\SuperUltraMega.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
