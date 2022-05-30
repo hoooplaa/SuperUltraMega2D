@@ -9,16 +9,26 @@ namespace Mega
 {
 	void Engine::Initialize()
 	{
-		SystemGuard::Initialize();
-
-		// Initialize GLFW and create our application window window
+		// Initialize GLFW and create our application window
 		glfwInit();
+
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Telling it not to create an OpenGL context
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // For now telling GLFW we dont want the window to be resized
 
-		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		m_pAppWindow = glfwCreateWindow(mode->width, mode->height, "SuperUltraMega2D", nullptr, nullptr); // 4th param lets you optionally specify a monitor to display
+		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+		// Create and position before showing
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		m_pAppWindow = glfwCreateWindow(mode->width, mode->height, "SuperUltraMega2D", nullptr, nullptr);
+		int x, y; glfwGetWindowPos(m_pAppWindow, &x, &y);
+		glfwSetWindowPos(m_pAppWindow, 0, y);
+		glfwShowWindow(m_pAppWindow);
 
 		// Initialize our systems
 		m_pRenderer = new Renderer;
@@ -42,7 +52,5 @@ namespace Mega
 		// Delete our application window
 		glfwDestroyWindow(m_pAppWindow);
 		glfwTerminate();
-		
-		SystemGuard::Destroy();
 	}
 }

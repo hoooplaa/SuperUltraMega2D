@@ -28,8 +28,11 @@ namespace Mega
 
 	void Scene::Clear()
 	{
+
 		for (auto& batch : m_batches)
 		{
+			batch.vertexIndices[0] = 0;
+			batch.vertexIndices[1] = 0;
 			batch.vertices.clear();
 		}
 	}
@@ -47,7 +50,7 @@ namespace Mega
 	void Scene::Draw(const Sprite& in_sprite)
 	{
 		// Get proper batch for the texture we're using
-		Batch& batch = GetBatchForTexture(in_sprite.texture);
+		Batch& batch = GetBatchForTexture(in_sprite.texture, m_batches);
 
 		Vec2F d = in_sprite.dimensions;
 		Vec2F p = in_sprite.position;
@@ -83,7 +86,8 @@ namespace Mega
 
 	void Scene::Draw(const Map& in_map)
 	{
-		m_batches[0] = in_map.GetDrawBatch();
+		Batch& batch = GetBatchForTexture(in_map.GetTileMap(), m_batches);
+		batch = in_map.GetDrawBatch();
 	}
 
 	void Scene::Draw(const AnimationPlayer& in_animPlayer)
@@ -108,11 +112,11 @@ namespace Mega
 		return out_animPlayer;
 	}
 
-	Batch& Scene::GetBatchForTexture(const Texture& in_t)
+	Batch& Scene::GetBatchForTexture(const Texture& in_t, tBatches& in_batches)
 	{
 		// Should already be a batch for each possible texture so we simply get the proper batch for the texture
-		MEGA_ASSERT(in_t.index < m_batches.size(), "Too many textures loaded or GetBatchForTexture() function fucking up tell alex");
+		MEGA_ASSERT(in_t.index < in_batches.size(), "Too many textures loaded or GetBatchForTexture() function fucking up tell alex");
 
-		return m_batches[in_t.index];
+		return in_batches[in_t.index];
 	}
 }

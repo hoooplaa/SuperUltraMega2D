@@ -118,7 +118,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)/middleware/Include/;$(SolutionDir)/middleware/Include/VulkanSDK;$(SolutionDir)/middleware/pugixml;$(SolutionDir)/middleware/Include/ImGui;$(SolutionDir)/middleware/Include/ImGui/Graphics;$(SolutionDir)/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)middleware/Include/;$(SolutionDir)middleware/Include/VulkanSDK;$(SolutionDir)middleware/pugixml;$(SolutionDir)middleware/Include/ImGui;$(SolutionDir)middleware/Include/ImGui/Graphics;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,7 +137,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)/middleware/Include/;$(SolutionDir)/middleware/Include/VulkanSDK;$(SolutionDir)/middleware/pugixml;$(SolutionDir)/middleware/Include/ImGui;$(SolutionDir)/middleware/Include/ImGui/Graphics;$(SolutionDir)/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)middleware/Include/;$(SolutionDir)middleware/Include/VulkanSDK;$(SolutionDir)middleware/pugixml;$(SolutionDir)middleware/Include/ImGui;$(SolutionDir)middleware/Include/ImGui/Graphics;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -180,6 +180,8 @@
     <ClInclude Include="..\src\Engine\Core\Math\Vec.h" />
     <ClInclude Include="..\src\Engine\Core\SystemGuard.h" />
     <ClInclude Include="..\src\Engine\Engine.h" />
+    <ClInclude Include="..\src\Engine\Events\Events.h" />
+    <ClInclude Include="..\src\Engine\Events\Key.h" />
     <ClInclude Include="..\src\Engine\Graphics\Objects\Batch.h" />
     <ClInclude Include="..\src\Engine\Graphics\Objects\Camera.h" />
     <ClInclude Include="..\src\Engine\Graphics\Objects\Light.h" />
@@ -196,6 +198,9 @@
     <ClInclude Include="..\src\Engine\Map.h" />
     <ClInclude Include="..\src\Engine\Scene.h" />
     <ClInclude Include="..\src\Engine\SuperUltraMega.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\src\Profiling.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

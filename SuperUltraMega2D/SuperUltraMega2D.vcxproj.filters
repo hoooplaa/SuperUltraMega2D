@@ -182,5 +182,16 @@
     <ClInclude Include="..\src\Engine\SuperUltraMega.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Engine\Events\Events.h">
+      <Filter>Source Files\Engine\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine\Events\Key.h">
+      <Filter>Source Files\Engine\Events</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\src\Profiling.txt">
+      <Filter>Source Files\Engine</Filter>
+    </Text>
   </ItemGroup>
 </Project>

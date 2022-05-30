@@ -35,10 +35,6 @@ public:
 	using Mat3 = glm::mat3;
 	using Mat4 = glm::mat4x4;
 
-	Model();
-	Model(const VertexData& in_vData);
-	Model(const VertexData& in_vData, const Mega::Texture& in_tData);
-
 	struct PushConstant {
 		Mat4 model = Mat4(1.0f);
 		Vec4 color = Vec4(1.0f);
@@ -59,7 +55,7 @@ public:
 // ================================ Public Functions ============================= //
 void Vulkan::Initialize(Mega::Renderer* in_pRenderer, GLFWwindow* in_pWindow)
 {
-	std::cout << "=============== Initializing Vulkan ==============\n" << std::endl;
+	std::cout << "\n=============== Initializing Vulkan ==============" << std::endl;
 
 	// Store a pointer to the main renderer for data transfering and window for rendering/setup
 	assert(in_pRenderer != nullptr && "ERROR: Cannot pass nullptr in place of Renderer* in Vulkan::Initialize()");
@@ -86,11 +82,7 @@ void Vulkan::Initialize(Mega::Renderer* in_pRenderer, GLFWwindow* in_pWindow)
 
 	CreateTextureSampler(m_sampler);
 
-	m_pBoxVertexData = new VertexData;
-	LoadVertexData("Rect.obj", m_pBoxVertexData);
-
 	CreateVertexBuffer(m_vertices, m_vertexBuffer, m_vertexBufferMemory);
-	CreateIndexBuffer(m_indices, m_indexBuffer, m_indexBufferMemory);
 
 	CreateDescriptorSetLayout(m_device, m_descriptorSetLayout);
 	CreateGraphicsPipeline(m_vertShaderModule, m_fragShaderModule, m_graphicsPipeline);
@@ -123,6 +115,13 @@ void Vulkan::Initialize(Mega::Renderer* in_pRenderer, GLFWwindow* in_pWindow)
 void Vulkan::Destroy()
 {
 	vkDeviceWaitIdle(m_device);
+
+	// ============= ImGui ============= //
+	ImGui_ImplVulkan_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	vkDestroyDescriptorPool(m_device, m_imguiDescriptorPool, nullptr);
+	// ================================= //
 
 	// Cleanup Vulkan
 	CleanupSwapchain(&m_swapchain);
@@ -157,14 +156,6 @@ void Vulkan::Destroy()
 	vkDestroyDevice(m_device, nullptr);
 	vkDestroyInstance(m_instance, nullptr);
 
-	// ============= ImGui ============= //
-	ImGui_ImplVulkan_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-	vkDestroyDescriptorPool(m_device, m_imguiDescriptorPool, nullptr);
-	// ================================= //
-
-	delete m_pBoxVertexData;
 }
 void Vulkan::CleanupSwapchain(VkSwapchainKHR* in_swapchain)
 {
@@ -230,9 +221,15 @@ void Vulkan::DrawFrame(std::vector<Mega::Batch>& in_batches)
 
 	uint32_t imageIndex;
 	VkResult result = vkAcquireNextImageKHR(m_device, m_swapchain, UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &imageIndex);
-	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-		RecreateSwapchain();
-		return;
+	if (result == VK_ERROR_OUT_OF_DATE_KHR)
+	{
+		int width = 0, height = 0;
+		glfwGetFramebufferSize(m_pWindow, &width, &height);
+		while (width == 0 || height == 0) {
+			glfwGetFramebufferSize(m_pWindow, &width, &height);
+			glfwWaitEvents();
+		}
+		//RecreateSwapchain();
 	}
 	else {
 		assert((result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR) && "ERROR: Failed to acquire swapchain image");
@@ -290,7 +287,7 @@ void Vulkan::DrawFrame(std::vector<Mega::Batch>& in_batches)
 	// ==================== Draw ================== //
 
 	// Update vertex data with batches
-	UpdateLoadedVertexData(in_batches);
+	UpdateVertexData(in_batches);
 	VkBuffer vertexBuffers1[] = { m_vertexBuffer };
 
 	VkDeviceSize offsets1[] = { 0 };
@@ -357,8 +354,15 @@ void Vulkan::DrawFrame(std::vector<Mega::Batch>& in_batches)
 	presentInfo.pResults = nullptr;
 
 	result = vkQueuePresentKHR(m_presentQueue, &presentInfo);
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-		RecreateSwapchain();
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+	{
+		int width = 0, height = 0;
+		glfwGetFramebufferSize(m_pWindow, &width, &height);
+		while (width == 0 || height == 0) {
+			glfwGetFramebufferSize(m_pWindow, &width, &height);
+			glfwWaitEvents();
+		}
+		//RecreateSwapchain();
 	}
 	else {
 		assert((result == VK_SUCCESS) && "ERROR: Failed to acquire swapchain image");
@@ -397,7 +401,7 @@ void Vulkan::CreateTextureImage(ImageObject& in_imageObject, const char* in_file
 	vkUnmapMemory(m_device, stagingBufferMemory);
 
 	stbi_image_free(pixels);
-	
+
 	// Create the VkImage object
 	VkImageCreateInfo imageInfo{};
 	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -414,7 +418,7 @@ void Vulkan::CreateTextureImage(ImageObject& in_imageObject, const char* in_file
 	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 	imageInfo.flags = 0; // Optional
-	
+
 	CreateImageObject(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, in_imageObject.image, in_imageObject.memory);
 
 	// Copy the buffer data to the image object, after transitioning the layout, then transition it again for optimal shader reading
@@ -440,7 +444,7 @@ void Vulkan::LoadTextureData(const char* in_texPath, Mega::Texture* in_pTextureD
 		ImageObject image;
 		m_textures.push_back(image);
 	}
-	
+
 	//  Create
 	CreateTextureImage(m_textures[index], in_texPath);
 	CreateImageView(m_textures[index].view, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_textures[index].image);
@@ -455,83 +459,11 @@ void Vulkan::LoadTextureData(const char* in_texPath, Mega::Texture* in_pTextureD
 	in_pTextureData->height = m_textures[index].extent.y;
 }
 
-void Vulkan::LoadVertexData(const char* in_objPath, VertexData* in_pVertexData)
-{
-	// Loads and stores data into vertex and index buffer given a customobj file and
-	// fills in_pVertexData with proper data to access the data stored in those buffers
-
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string warning, error;
-
-	bool result = tinyobj::LoadObj(&attrib, &shapes, &materials, &warning, &error, in_objPath);
-	if (!result) {
-		std::cout << "Failed to load OBJ" << std::endl;
-		throw std::exception(error.c_str());
-	};
-
-	// Set vertex data indices start
-	in_pVertexData->indices[0] = m_indices.size();
-
-	// Fill it into are format
-	std::unordered_map<Mega::Vertex, INDEX_TYPE> uniqueVertices;
-	for (const auto& shape : shapes) {
-		for (const auto& index : shape.mesh.indices) {
-			Mega::Vertex vertex{};
-
-			// Positon
-			if (index.vertex_index >= 0) {
-				vertex.pos = {
-					attrib.vertices[3 * index.vertex_index + 0],
-					attrib.vertices[3 * index.vertex_index + 1],
-					attrib.vertices[3 * index.vertex_index + 2]
-				};
-			}
-
-			// Texture Coordinate
-			if (index.texcoord_index >= 0) {
-				vertex.texCoord = {
-					attrib.texcoords[2 * index.texcoord_index + 0],
-					1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
-				};
-			}
-
-			// Normal
-			if (index.normal_index >= 0) {
-				float nx = attrib.normals[3 * index.normal_index + 0];
-				float ny = attrib.normals[3 * index.normal_index + 1];
-				float nz = attrib.normals[3 * index.normal_index + 2];
-
-				vertex.normal = glm::normalize(glm::vec3(nx, ny, nz));
-			}
-
-			// Colors
-			float cx = attrib.colors[3 * index.vertex_index + 0];
-			float cy = attrib.colors[3 * index.vertex_index + 1];
-			float cz = attrib.colors[3 * index.vertex_index + 2];
-
-			vertex.color = glm::vec4(cx, cy, cz, 1.0f);
-
-			// Unique Indices
-			if (uniqueVertices.count(vertex) == 0) {
-				uniqueVertices[vertex] = static_cast<INDEX_TYPE>(m_vertices.size());
-				m_vertices.push_back(vertex);
-			}
-
-			m_indices.push_back(uniqueVertices[vertex]);
-		}
-	}
-
-	// Set vertex data indices end
-	in_pVertexData->indices[1] = m_indices.size();
-}
-
 // ================================ Private Functions ============================= //
 
 void Vulkan::CreateInstance()
 {
-	std::cout << " ----- Creating Vulkan Instance -----\n" << std::endl;
+	std::cout << "Creating Vulkan Instance" << std::endl;
 
 	bool result1 = CheckValidationLayerSupport();
 	bool result2 = CheckGLFWExtensionSupport();
@@ -738,7 +670,7 @@ void Vulkan::PickPhysicalDevice(VkPhysicalDevice& in_device)
 QueueFamilyIndices Vulkan::FindQueueFamilies(const VkPhysicalDevice in_device, VkSurfaceKHR in_surface)
 {
 	// Makes a QueueFamilyIndices struct and iterates through each queue family of
-    // in_physicalDevice and fills in the struct with the indice of that queue family
+	// in_physicalDevice and fills in the struct with the indice of that queue family
 
 	QueueFamilyIndices out_indices;
 
@@ -766,7 +698,7 @@ QueueFamilyIndices Vulkan::FindQueueFamilies(const VkPhysicalDevice in_device, V
 	return out_indices;
 }
 bool Vulkan::IsPhysicalDeviceSuitable(const VkPhysicalDevice in_device, const VkSurfaceKHR in_surface)
-{		
+{
 	// Tests if the physical device is suitable for our needs (specifically has graphics queue and can
 	// draw to our surface, or finding a queue family that supports presenting to the surface we created)
 	VkPhysicalDeviceProperties deviceProperties;
@@ -883,7 +815,7 @@ void Vulkan::CreateSwapchain(GLFWwindow* in_pWindow, const VkSurfaceKHR in_surfa
 
 	assert(m_physicalDevice != nullptr && "ERROR: Cannot create a swapchain with a null physical device");
 	assert(m_device != nullptr && "ERROR: Cannot create a swapchain with a null logical device");
-	
+
 	assert(in_surface != nullptr && "ERROR: Cannot create a swapchain with a null surface");
 
 	// Query the details of our swapchain given our chosen physical device and surface, because not eveything will be compatable with the surface etc
@@ -1046,7 +978,7 @@ void Vulkan::CreateDescriptorPool()
 	VkResult result = vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &m_descriptorPool);
 	assert(result == VK_SUCCESS && "ERROR: vkCreateDescriptorPool() did not return success");
 }
-void Vulkan::CreateDescriptorSetLayout(const VkDevice in_device, VkDescriptorSetLayout& in_descriptorSetLayout) 
+void Vulkan::CreateDescriptorSetLayout(const VkDevice in_device, VkDescriptorSetLayout& in_descriptorSetLayout)
 {
 	VkDescriptorSetLayoutBinding uboLayoutBindingVert{};
 	uboLayoutBindingVert.binding = 0;
@@ -1165,30 +1097,8 @@ void Vulkan::CreateVertexBuffer(std::vector<Mega::Vertex>& in_vertices, VkBuffer
 
 	CopyBuffer(m_stagingBuffer, in_buffer, bufferSize);
 }
-void Vulkan::CreateIndexBuffer(std::vector<INDEX_TYPE>& in_indices, VkBuffer& in_buffer, VkDeviceMemory& in_memory)
-{
-	std::cout << "Creating index buffer..." << std::endl;
 
-	VkDeviceSize bufferSize = sizeof(in_indices[0]) * in_indices.size();
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, in_indices.data(), sizeof(in_indices));
-	vkUnmapMemory(m_device, stagingBufferMemory);
-
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, in_buffer, in_memory);
-
-	CopyBuffer(stagingBuffer, in_buffer, bufferSize);
-
-	vkDestroyBuffer(m_device, stagingBuffer, nullptr);
-	vkFreeMemory(m_device, stagingBufferMemory, nullptr);
-}
-
-void Vulkan::UpdateLoadedVertexData(std::vector<Mega::Batch>& in_batches)
+void Vulkan::UpdateVertexData(std::vector<Mega::Batch>& in_batches)
 {
 	// For each batch, add the vertex data to the vertex buffer and add correct indexes so we can draw the batches later
 	m_vertices.clear();
@@ -1204,38 +1114,14 @@ void Vulkan::UpdateLoadedVertexData(std::vector<Mega::Batch>& in_batches)
 	VkDeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
 
 	assert(sizeof(m_vertices[0]) * m_vertices.size() <= VERTEX_BUFFER_SIZE && "ERROR: Vertex buffer full");
-	
+
 	// Map the veretx data to the buffer
 	void* data;
 	vkMapMemory(m_device, m_stagingBufferMemory, 0, bufferSize, 0, &data);
 	memcpy(data, m_vertices.data(), (size_t)bufferSize);
 	vkUnmapMemory(m_device, m_stagingBufferMemory);
-	
+
 	CopyBuffer(m_stagingBuffer, m_vertexBuffer, bufferSize);
-}
-void Vulkan::UpdateLoadedIndexData()
-{
-	VkDeviceSize bufferSize = sizeof(m_indices[0]) * m_indices.size();
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, m_indices.data(), (size_t)bufferSize);
-	vkUnmapMemory(m_device, stagingBufferMemory);
-
-	vkDestroyBuffer(m_device, m_indexBuffer, nullptr);
-	vkFreeMemory(m_device, m_indexBufferMemory, nullptr);
-	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_indexBuffer, m_indexBufferMemory);
-
-	CopyBuffer(stagingBuffer, m_indexBuffer, bufferSize);
-
-	vkDestroyBuffer(m_device, stagingBuffer, nullptr);
-	vkFreeMemory(m_device, stagingBufferMemory, nullptr);
 }
 void Vulkan::UpdateLoadedTextureData()
 {
@@ -1603,7 +1489,7 @@ void Vulkan::CreateDrawCommands(std::vector<VkCommandBuffer>& in_buffers, std::v
 void Vulkan::CreateDrawCommandPools(std::vector<VkCommandPool>& in_pools)
 {
 	// Creates a command pool for each frame in the swapchain
-	
+
 	std::cout << "Creating draw command pools..." << std::endl;
 
 	assert(m_device != nullptr && "ERROR: Cannot create a command pool using a null logical device");
@@ -1680,7 +1566,7 @@ void Vulkan::EndSingleTimeCommand(const VkCommandPool& in_pool, VkCommandBuffer 
 
 void Vulkan::CreateDepthResources(ImageObject& in_depthObject)
 {
-	VkFormat depthFormat = FindDepthFormat();	
+	VkFormat depthFormat = FindDepthFormat();
 
 	VkImageCreateInfo imageInfo{};
 	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;

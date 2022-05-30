@@ -1,7 +1,6 @@
 #include "Map.h"
 
 #include <iostream>
-
 #include <pugixml.hpp>
 
 #define ERROR_MSG(msg) std::cout << msg << std::endl;
@@ -79,7 +78,7 @@ namespace Mega
 			}
 			std::cout << "\n";
 		}
-		std::cout << std::endl;
+		std::cout << std::flush;
 
 		return true;
 	}
@@ -129,7 +128,6 @@ namespace Mega
 
 				m_tileTypes.push_back(newTile);
 			}
-			std::cout << "Tile type count: " << row << std::endl;
 			MEGA_ASSERT(row == tileCount, "Error loading tile types (loaded tile count did not match expected tile count)");
 		}
 

@@ -964,26 +964,27 @@ void    ImGui_ImplVulkan_DestroyFontUploadObjects()
 {
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
-    if (bd->UploadBuffer)
+    if (bd->UploadBuffer && v->Allocator)
     {
-        vkDestroyBuffer(v->Device, bd->UploadBuffer, v->Allocator);
+        vkDestroyBuffer(v->Device, bd->UploadBuffer, nullptr);
         bd->UploadBuffer = VK_NULL_HANDLE;
     }
-    if (bd->UploadBufferMemory)
+    if (bd->UploadBufferMemory && v->Allocator)
     {
-        vkFreeMemory(v->Device, bd->UploadBufferMemory, v->Allocator);
+        vkFreeMemory(v->Device, bd->UploadBufferMemory, nullptr);
         bd->UploadBufferMemory = VK_NULL_HANDLE;
     }
 }
 
 void    ImGui_ImplVulkan_DestroyDeviceObjects()
 {
+   // v->Allocator = VK_NULL_HANDLE;
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
     ImGui_ImplVulkanH_DestroyWindowRenderBuffers(v->Device, &bd->MainWindowRenderBuffers, v->Allocator);
     ImGui_ImplVulkan_DestroyFontUploadObjects();
 
-    if (bd->ShaderModuleVert)     { vkDestroyShaderModule(v->Device, bd->ShaderModuleVert, v->Allocator); bd->ShaderModuleVert = VK_NULL_HANDLE; }
+    if (bd->ShaderModuleVert)     { vkDestroyShaderModule(v->Device, bd->ShaderModuleVert, nullptr); bd->ShaderModuleVert = VK_NULL_HANDLE; }
     if (bd->ShaderModuleFrag)     { vkDestroyShaderModule(v->Device, bd->ShaderModuleFrag, v->Allocator); bd->ShaderModuleFrag = VK_NULL_HANDLE; }
     if (bd->FontView)             { vkDestroyImageView(v->Device, bd->FontView, v->Allocator); bd->FontView = VK_NULL_HANDLE; }
     if (bd->FontImage)            { vkDestroyImage(v->Device, bd->FontImage, v->Allocator); bd->FontImage = VK_NULL_HANDLE; }

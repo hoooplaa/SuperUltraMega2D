@@ -10,7 +10,7 @@ void ImguiObject::Initialize(GLFWwindow* in_pWindow)
 
 	ImGui::StyleColorsDark();
 
-	ImGui_ImplGlfw_InitForVulkan(in_pWindow, true);
+	ImGui_ImplGlfw_InitForVulkan(in_pWindow, false);
 }
 
 void ImguiObject::Destroy(Vulkan* v)

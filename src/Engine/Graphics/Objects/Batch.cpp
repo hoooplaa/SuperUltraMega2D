@@ -4,7 +4,7 @@ namespace Mega
 {
 	Batch::Batch()
 	{
-		vertices = std::vector<Vertex>();
+		vertices = std::vector<Vertex>(0);
 	};
 	Batch::~Batch() {};
 }

@@ -17,13 +17,12 @@ namespace Mega
 		Vec3F pos = { 0.0f, 0.0f, 0.0f };
 		Vec4F color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		Vec2F texCoord = { 0.0f, 0.0f };
-		Vec3F normal = { 0.0f, 0.0f, 1.0f };
 
 		static VkVertexInputBindingDescription GetBindingDescription();
-		static std::array<VkVertexInputAttributeDescription, 4> GetAttributeDescriptions();
+		static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions();
 
 		bool operator==(const Vertex& other) const {
-			return pos == other.pos && color == other.color && texCoord == other.texCoord && normal == other.normal;
+			return pos == other.pos && color == other.color && texCoord == other.texCoord;
 		}
 	};
 }

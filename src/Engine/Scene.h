@@ -45,7 +45,7 @@ namespace Mega
 		void SetRenderer(Renderer* in_pRenderer) { m_pRenderer = in_pRenderer; }
 
 	private:
-		inline Batch& GetBatchForTexture(const Texture& in_t);
+		inline Batch& GetBatchForTexture(const Texture& in_t, tBatches& in_batches);
 
 		// Graphics
 		GLFWwindow* m_pWindow = nullptr;

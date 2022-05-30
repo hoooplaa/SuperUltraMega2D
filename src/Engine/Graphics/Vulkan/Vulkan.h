@@ -32,10 +32,6 @@ namespace std {
 	};
 }
 
-struct VertexData {
-	uint32_t indices[2] = { 0, 0 };
-};
-
 enum class eVulkanInitState {
 	Created,
 	Initialzed,
@@ -47,8 +43,6 @@ private:
 	friend Mega::Renderer;
 	friend ImguiObject;
 
-	VertexData* m_pBoxVertexData;
-
 	void Initialize(Mega::Renderer* in_pRenderer, GLFWwindow* in_pWindow);
 	void Destroy();
 	void RecreateSwapchain();
@@ -58,11 +52,9 @@ private:
 
 	void SetViewData(const Mega::Camera::ViewData& in_viewData);
 
-	void LoadVertexData(const char* in_objPath, VertexData* in_pVertexData);
 	void LoadTextureData(const char* in_texPath, Mega::Texture* in_pTextureData);
 
-	void UpdateLoadedVertexData(std::vector<Mega::Batch>& in_batches);
-	void UpdateLoadedIndexData();
+	void UpdateVertexData(std::vector<Mega::Batch>& in_batches);
 	void UpdateLoadedTextureData();
 
 private:
@@ -113,7 +105,6 @@ private:
 	void UpdateDescriptorSets();
 
 	void CreateVertexBuffer(std::vector<Mega::Vertex>& in_vertices, VkBuffer& in_buffer, VkDeviceMemory& in_memory);
-	void CreateIndexBuffer(std::vector<INDEX_TYPE>& in_indices, VkBuffer& in_buffer, VkDeviceMemory& in_memory);
 
 	void CreateUniformBuffers();
 	void UpdateUniformBuffer(uint32_t in_imageIndex);

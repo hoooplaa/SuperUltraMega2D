@@ -1,0 +1,7 @@
+Base Test: 5/29/2022
+	- Debug Mode Alex's computer
+	- Drawing hoopla sprite, test map, among us animation
+	- Average FPS: 60.3
+
+Test 1:
+	- Update: test map now loaded in constant vertex buffer instead of updated every frame loaded

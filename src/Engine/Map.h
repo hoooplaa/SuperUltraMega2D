@@ -10,17 +10,18 @@
 #include "Graphics/Objects/Batch.h"
 #include "Core/SystemGuard.h"
 
+namespace Mega { class Renderer; }
+
 namespace Mega
 {
-	using Vec2F = glm::vec2;
-	using Vec3F = glm::vec3;
-
 	// A class used for storing and loading map data from Tiled
 	// Note: map vertex data is stored in the constant vertex buffer
 	// and therefore map vertex data can not be edited as sprites' can
 	class Map
 	{
 	public:
+		friend Renderer;
+
 		// Stores the texture coords for a specific tile used in the map
 		struct Tile
 		{
@@ -36,6 +37,7 @@ namespace Mega
 		void SetTileMap(const Texture& in_t) { m_tileMap = in_t; }
 		void SetScale(float in_scale) { m_scale = in_scale; }
 		const Batch& GetDrawBatch() const { return m_drawBatch; }
+		const Texture& GetTileMap() const { return m_tileMap; }
 
 	private:
 		bool LoadMapData(const std::string& in_filepath);
